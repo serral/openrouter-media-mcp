@@ -1,0 +1,13 @@
+.env*
+!.env.example
+media/
+.venv/
+__pycache__/
+.DS_Store
+
+# Client MCP registrations are machine-specific (they embed this clone's
+# absolute path). Each has a committed .example template; copy it and
+# substitute your own path, per README.md "Setup: client registration".
+.codex/config.toml
+.omp/mcp.json
+.opencode/opencode.json

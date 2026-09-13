@@ -1,0 +1,2 @@
+[mcp_servers.openrouter-media]
+command = "/absolute/path/to/openrouter-media-mcp/bin/openrouter-media-mcp"

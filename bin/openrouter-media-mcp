@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Self-locating: resolve the repo root from this script's own path (bin/<this>
+# -> repo root is one level up). Works from any clone location, and survives
+# the repo being renamed or moved, unlike a hardcoded absolute path.
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd -P)"
+
+# Key source: macOS Keychain first (service name OPENROUTER_MEDIA_KEY is
+# reserved for the key dedicated to this project), .env fallback.
+if KEY="$(security find-generic-password -s OPENROUTER_MEDIA_KEY -a "$USER" -w 2>/dev/null)" && [[ -n "$KEY" ]]; then
+  export OPENROUTER_MEDIA_KEY="$KEY"
+elif [[ -f "$REPO_ROOT/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$REPO_ROOT/.env"
+  set +a
+else
+  echo "openrouter-media: no OPENROUTER_MEDIA_KEY in Keychain and no .env" >&2
+  exit 1
+fi
+
+export OPENROUTER_MEDIA_DIR="$REPO_ROOT/media"
+
+# GUI clients (Claude Desktop) spawn this wrapper with launchd's minimal PATH
+# (/usr/bin:/bin:/usr/sbin:/sbin); `uv` is not on it. Exec the venv interpreter
+# directly. uv is for development only.
+exec "$REPO_ROOT/.venv/bin/python" \
+  "$REPO_ROOT/server.py"

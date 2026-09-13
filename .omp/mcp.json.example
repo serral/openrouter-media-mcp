@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "openrouter-media": {
+      "type": "stdio",
+      "command": "/absolute/path/to/openrouter-media-mcp/bin/openrouter-media-mcp",
+      "timeout": 180000
+    }
+  }
+}
